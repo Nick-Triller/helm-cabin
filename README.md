@@ -3,6 +3,8 @@
 Helm Cabin is a web UI that visualizes Helm releases 
 in a Kubernetes cluster. 
 
+![](./screenshots/screenshot001.png)
+
 ## Motivation
  
 I wasn't able to find a simple web UI that visualizes the data managed by 
