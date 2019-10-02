@@ -23,10 +23,6 @@ helm upgrade --install TODO
 Helm Cabin doesn't handle TLS itself. Please use a reverse proxy, 
 e. g. [Traefik](https://traefik.io/), for TLS termination.
 
-## Build
-
-TODO
-
 ## Project architecture
 
 The project layout is based on 
