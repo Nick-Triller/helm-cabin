@@ -30,14 +30,14 @@ func NewContext() context.Context {
 }
 
 // PollReleases uses helm client to poll releases
-func PollReleases(releasesChan chan *services.ListReleasesResponse, tillerReachableChan chan bool, tillerAddress *string) {
+func PollReleases(releasesChan chan *services.ListReleasesResponse, tillerReachableChan chan bool, settings *Settings) {
 	pollSleep := 6 * time.Second
 
 	// target := "tiller-deploy.svc.kube-system.cluster.local:44134"
 	// target = "localhost:8888"
 
 	for {
-		conn, err := grpc.Dial(*tillerAddress, grpc.WithInsecure())
+		conn, err := grpc.Dial(*settings.TillerAddress, grpc.WithInsecure())
 		if err != nil {
 			log.Fatalf("failed to connect: %v\n", err)
 		}
