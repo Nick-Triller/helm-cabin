@@ -4,7 +4,7 @@
             <router-link exact exact-active-class="active" to="/">Releases</router-link>
         </div>
         <div id="links">
-            <a href="https://github.com/Nick-Triller/helmcabin">GitHub</a>
+            <a href="https://github.com/Nick-Triller/helm-cabin" target="_blank">GitHub</a>
         </div>
         <div class="clearfix"></div>
     </div>
