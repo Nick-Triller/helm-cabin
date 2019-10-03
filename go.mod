@@ -27,6 +27,7 @@ require (
 	github.com/spf13/cobra v0.0.0-20180319062004-c439c4fa0937
 	golang.org/x/crypto v0.0.0-20190927123631-a832865fa7ad // indirect
 	golang.org/x/time v0.0.0-20190921001708-c4c64cad1fd0 // indirect
+	google.golang.org/grpc v1.13.0
 	gopkg.in/gorp.v1 v1.7.2 // indirect
 	k8s.io/client-go v0.0.0
 	k8s.io/helm v2.14.3+incompatible
