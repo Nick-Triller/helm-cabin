@@ -1,8 +1,7 @@
 <template>
     <div id="navbar">
         <div id="navitems">
-            <router-link exact exact-active-class="active" to="/">Home</router-link>
-            <router-link exact exact-active-class="active" to="/releases">Releases</router-link>
+            <router-link exact exact-active-class="active" to="/">Releases</router-link>
         </div>
         <div id="links">
             <a href="https://github.com/Nick-Triller/helmcabin">GitHub</a>
