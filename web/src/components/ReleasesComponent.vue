@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Helm Cabin</h1>
     <table>
       <tr>
         <th>Name</th>
@@ -25,7 +26,7 @@
 import axios from 'axios'
 
 export default {
-  name: 'Releases',
+  name: 'ReleasesComponent',
   data() {
     return {
       releases: null,

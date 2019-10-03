@@ -35,12 +35,10 @@ from Tiller.
 The result is cached in memory. 
 Obviously, polling is a suboptimal solution if the number of 
 releases (or revisions) is large because a lot of data is transferred on each poll.
-Code of the Helm client is used to communicate with Tiller.
 
-Helm Cabin tries to connect with Tiller via `tiller-deploy.svc.kube-system.cluster.local` first. 
-If no connection could be established, it is assumed Helm Cabin runs outside a Kubernetes cluster. 
-Helm Cabin tries to port-forward using the current Kubernetes context in this case. 
-Port-forwarding mode is intended for development only.
+Helm Cabin tries to connect with Tiller via `tiller-deploy.svc.kube-system.cluster.local` by default. 
+The tiller host can be overriden with the `tillerAddress` CLI flag.
+Use port forwarding for local development.
 
 ### Frontend
 

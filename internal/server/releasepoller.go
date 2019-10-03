@@ -30,14 +30,14 @@ func NewContext() context.Context {
 }
 
 // PollReleases uses helm client to poll releases
-func PollReleases(releasesChan chan *services.ListReleasesResponse) {
+func PollReleases(releasesChan chan *services.ListReleasesResponse, tillerReachableChan chan bool, tillerAddress *string) {
 	pollSleep := 6 * time.Second
 
-	target := "tiller-deploy.svc.kube-system.cluster.local:44134"
-	target = "localhost:8888"
+	// target := "tiller-deploy.svc.kube-system.cluster.local:44134"
+	// target = "localhost:8888"
 
 	for {
-		conn, err := grpc.Dial(target, grpc.WithInsecure())
+		conn, err := grpc.Dial(*tillerAddress, grpc.WithInsecure())
 		if err != nil {
 			log.Fatalf("failed to connect: %v\n", err)
 		}
@@ -61,6 +61,7 @@ func PollReleases(releasesChan chan *services.ListReleasesResponse) {
 
 		if err != nil {
 			log.Printf("failed to create listReleasesClient: %v\n", err)
+			tillerReachableChan <- false
 			time.Sleep(2 * time.Second)
 			continue
 		}
@@ -68,10 +69,12 @@ func PollReleases(releasesChan chan *services.ListReleasesResponse) {
 		resp, err := listReleasesClient.Recv()
 		if err != nil {
 			log.Printf("failed to list releases: %v\n", err)
+			tillerReachableChan <- false
 			time.Sleep(2 * time.Second)
 			continue
 		}
 		releasesChan <- resp
+		tillerReachableChan <- true
 
 		_ = conn.Close()
 		time.Sleep(pollSleep)
