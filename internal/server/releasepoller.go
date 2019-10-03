@@ -43,17 +43,17 @@ func PollReleases(releasesChan chan *services.ListReleasesResponse, tillerReacha
 		}
 		client := services.NewReleaseServiceClient(conn)
 		listReleaseRequest := &services.ListReleasesRequest{
-			Limit:                9999999999,
-			Offset:               "",
+			Limit:  9999999999,
+			Offset: "",
 			// Reverse chronological
-			SortBy:               services.ListSort_LAST_RELEASED,
-			Filter:               "",
+			SortBy: services.ListSort_LAST_RELEASED,
+			Filter: "",
 			// Reverse chronological
-			SortOrder:            services.ListSort_DESC,
+			SortOrder: services.ListSort_DESC,
 			// Releases with any status
-			StatusCodes:          releaseStatuses,
+			StatusCodes: releaseStatuses,
 			// Releases with any namespace
-			Namespace:            "",
+			Namespace: "",
 		}
 
 		ctx := NewContext()

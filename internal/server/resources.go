@@ -7,11 +7,11 @@ import (
 )
 
 type releaseResource struct {
-	Name string
+	Name      string
 	Namespace string
-	Chart *chartMetadata
-	Info *ReleaseInfo
-	Version int32
+	Chart     *chartMetadata
+	Info      *ReleaseInfo
+	Version   int32
 }
 
 type chartMetadata struct {
@@ -50,7 +50,7 @@ type chartMetadata struct {
 	// made available for inspection by other applications.
 	Annotations map[string]string
 	// KubeVersion is a SemVer constraint specifying the version of Kubernetes required.
-	KubeVersion          string
+	KubeVersion string
 }
 
 type ReleaseInfo struct {
@@ -60,7 +60,7 @@ type ReleaseInfo struct {
 	// Deleted tracks when this object was deleted.
 	Deleted *timestamp.Timestamp
 	// Description is human-friendly "log entry" about this release.
-	Description          string
+	Description string
 }
 
 // Status defines the status of a release.
@@ -77,7 +77,7 @@ type Status struct {
 
 func releaseToResource(r *release.Release) *releaseResource {
 	resource := &releaseResource{
-		Name: r.Name,
+		Name:      r.Name,
 		Namespace: r.Namespace,
 		Chart: &chartMetadata{
 			Name:          r.Chart.Metadata.Name,
@@ -99,15 +99,15 @@ func releaseToResource(r *release.Release) *releaseResource {
 			KubeVersion:   r.Chart.Metadata.KubeVersion,
 		},
 		Info: &ReleaseInfo{
-			Status:               &Status{
+			Status: &Status{
 				StatusId:  r.Info.Status.Code.String(),
 				Resources: r.Info.Status.Resources,
 				Notes:     r.Info.Status.Notes,
 			},
-			FirstDeployed:        r.Info.FirstDeployed,
-			LastDeployed:         r.Info.LastDeployed,
-			Deleted:              r.Info.Deleted,
-			Description:          r.Info.Description,
+			FirstDeployed: r.Info.FirstDeployed,
+			LastDeployed:  r.Info.LastDeployed,
+			Deleted:       r.Info.Deleted,
+			Description:   r.Info.Description,
 		},
 		Version: r.Version,
 	}

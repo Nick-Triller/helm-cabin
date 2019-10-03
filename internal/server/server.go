@@ -11,15 +11,16 @@ import (
 )
 
 type server struct {
-	releasesChan chan *services.ListReleasesResponse
-	releases *services.ListReleasesResponse
+	releasesChan        chan *services.ListReleasesResponse
+	releases            *services.ListReleasesResponse
 	tillerReachableChan chan bool
-	tillerReachable bool
-	settings *Settings
+	tillerReachable     bool
+	settings            *Settings
 }
 
 // NewServer creates a server struct
 var instance *server
+
 func NewServer(settings *Settings) *server {
 	instance = &server{settings: settings}
 	return instance
@@ -42,7 +43,7 @@ func (s *server) Start() {
 
 func releasesEndpoint(w http.ResponseWriter, r *http.Request) {
 	filterStatuses := r.URL.Query()["status"]
-	resources  := make([]*releaseResource, 0)
+	resources := make([]*releaseResource, 0)
 	for _, r := range instance.releases.GetReleases() {
 		// Filter according to status
 		releaseStatus := strconv.FormatInt(int64(r.Info.Status.Code), 10)
@@ -57,8 +58,8 @@ func releasesEndpoint(w http.ResponseWriter, r *http.Request) {
 func watchChannels(s *server) {
 	for {
 		select {
-		case s.releases = <- s.releasesChan:
-		case s.tillerReachable = <- s.tillerReachableChan:
+		case s.releases = <-s.releasesChan:
+		case s.tillerReachable = <-s.tillerReachableChan:
 		}
 	}
 }

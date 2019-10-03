@@ -4,7 +4,7 @@ import "flag"
 
 type Settings struct {
 	TillerAddress *string
-	ListenPort *int
+	ListenPort    *int
 }
 
 func SettingsFromCli() *Settings {
