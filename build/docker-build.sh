@@ -1,1 +1,1 @@
-docker build -f Dockerfile -t helmcabin:latest ..
+docker build -f Dockerfile -t nicktriller/helm-cabin:latest ..
