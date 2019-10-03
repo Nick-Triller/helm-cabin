@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"k8s.io/helm/pkg/proto/hapi/chart"
+	"k8s.io/helm/pkg/proto/hapi/release"
 )
 
 type releaseResource struct {
@@ -72,4 +73,43 @@ type Status struct {
 	Notes string
 	// LastTestSuiteRun provides results on the last test run on a release
 	// LastTestSuiteRun *TestSuite `protobuf:"bytes,5,opt,name=last_test_suite_run,json=lastTestSuiteRun,proto3" json:"last_test_suite_run,omitempty"`
+}
+
+func releaseToResource(r *release.Release) *releaseResource {
+	resource := &releaseResource{
+		Name: r.Name,
+		Namespace: r.Namespace,
+		Chart: &chartMetadata{
+			Name:          r.Chart.Metadata.Name,
+			Home:          r.Chart.Metadata.Home,
+			Sources:       r.Chart.Metadata.Sources,
+			Version:       r.Chart.Metadata.Version,
+			Description:   r.Chart.Metadata.Description,
+			Keywords:      r.Chart.Metadata.Keywords,
+			Maintainers:   r.Chart.Metadata.Maintainers,
+			Engine:        r.Chart.Metadata.Engine,
+			Icon:          r.Chart.Metadata.Icon,
+			ApiVersion:    r.Chart.Metadata.ApiVersion,
+			Condition:     r.Chart.Metadata.Condition,
+			Tags:          r.Chart.Metadata.Tags,
+			AppVersion:    r.Chart.Metadata.ApiVersion,
+			Deprecated:    r.Chart.Metadata.Deprecated,
+			TillerVersion: r.Chart.Metadata.TillerVersion,
+			Annotations:   r.Chart.Metadata.Annotations,
+			KubeVersion:   r.Chart.Metadata.KubeVersion,
+		},
+		Info: &ReleaseInfo{
+			Status:               &Status{
+				StatusId:  r.Info.Status.Code.String(),
+				Resources: r.Info.Status.Resources,
+				Notes:     r.Info.Status.Notes,
+			},
+			FirstDeployed:        r.Info.FirstDeployed,
+			LastDeployed:         r.Info.LastDeployed,
+			Deleted:              r.Info.Deleted,
+			Description:          r.Info.Description,
+		},
+		Version: r.Version,
+	}
+	return resource
 }
