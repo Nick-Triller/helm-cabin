@@ -1,13 +1,11 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
 	"k8s.io/helm/pkg/proto/hapi/services"
 	"k8s.io/helm/pkg/version"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 type server struct {
@@ -35,24 +33,8 @@ func (s *server) Start() {
 	go PollReleases(s.releasesChan, s.tillerReachableChan, s.settings)
 	go watchChannels(s)
 
-	http.HandleFunc("/releases", releasesEndpoint)
-
 	log.Printf("Starting server on port %d\n ", *s.settings.ListenPort)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *s.settings.ListenPort), nil))
-}
-
-func releasesEndpoint(w http.ResponseWriter, r *http.Request) {
-	filterStatuses := r.URL.Query()["status"]
-	resources := make([]*releaseResource, 0)
-	for _, r := range instance.releases.GetReleases() {
-		// Filter according to status
-		releaseStatus := strconv.FormatInt(int64(r.Info.Status.Code), 10)
-		if contains(filterStatuses, releaseStatus) {
-			resources = append(resources, releaseToResource(r))
-		}
-	}
-	jsonData, _ := json.MarshalIndent(resources, "", "  ")
-	_, _ = w.Write(jsonData)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *s.settings.ListenPort), router(s)))
 }
 
 func watchChannels(s *server) {
