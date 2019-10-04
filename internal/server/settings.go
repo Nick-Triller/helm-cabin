@@ -9,7 +9,7 @@ type Settings struct {
 }
 
 func SettingsFromCli() *Settings {
-	defaultTillerAddress := "tiller-deploy.svc.kube-system.cluster.local:44134"
+	defaultTillerAddress := "tiller-deploy.kube-system.svc.cluster.local:44134"
 	tillerAddress := flag.String("tillerAddress", defaultTillerAddress, "Tiller address")
 	listenPort := flag.Int("port", 8080, "Server listen port")
 	frontendPath := flag.String("frontendPath", "web/dist", "Path to frontend files")

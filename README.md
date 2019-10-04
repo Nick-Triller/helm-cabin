@@ -38,7 +38,7 @@ The result is cached in memory.
 Obviously, polling is a suboptimal solution if the number of 
 releases (or revisions) is large because a lot of data is transferred on each poll.
 
-Helm Cabin tries to connect with Tiller via `tiller-deploy.svc.kube-system.cluster.local` by default. 
+Helm Cabin tries to connect with Tiller via `tiller-deploy.kube-system.svc.cluster.local` by default. 
 The tiller host can be overriden with the `tillerAddress` CLI flag.
 Use port forwarding for local development.
 
