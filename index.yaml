@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  helm-cabin:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2019-10-04T14:20:40.283121021+02:00"
+    description: A web UI that visualizes Helm releases in a Kubernetes cluster
+    digest: c82836e3e2c35884d71789e6df6f93aa80cd8acbe4119cbabee21c0c3ba3c186
+    name: helm-cabin
+    urls:
+    - https://nick-triller.github.io/helm-cabin/helm-cabin-0.1.0.tgz
+    version: 0.1.0
+generated: "2019-10-04T14:20:40.281747063+02:00"
