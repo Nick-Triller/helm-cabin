@@ -6,22 +6,28 @@ import (
 	"k8s.io/helm/pkg/version"
 	"log"
 	"net/http"
+	"sync"
 )
 
 type server struct {
 	releasesChan        chan *services.ListReleasesResponse
-	releases            *services.ListReleasesResponse
+	releasesCache       *services.ListReleasesResponse
+	releasesCacheMutex  sync.RWMutex
 	tillerReachableChan chan bool
-	tillerReachable     bool
 	settings            *Settings
 }
 
 // NewServer creates a server struct
-var instance *server
-
 func NewServer(settings *Settings) *server {
-	instance = &server{settings: settings}
-	return instance
+	return &server{settings: settings}
+}
+
+// getReleases returns a list of cached releasesCache
+func (s *server) getReleases() *services.ListReleasesResponse {
+	s.releasesCacheMutex.RLock()
+	releases := s.releasesCache
+	defer s.releasesCacheMutex.RUnlock()
+	return releases
 }
 
 // Start is the main entrypoint that bootstraps the application
@@ -30,18 +36,22 @@ func (s *server) Start() {
 
 	s.releasesChan = make(chan *services.ListReleasesResponse)
 	s.tillerReachableChan = make(chan bool)
-	go PollReleases(s.releasesChan, s.tillerReachableChan, s.settings)
-	go watchChannels(s)
 
-	log.Printf("Starting server on port %d\n ", *s.settings.ListenPort)
+	// Drain unused channel
+	go func() { for { <- s.tillerReachableChan }}()
+	go PollReleases(s.releasesChan, s.tillerReachableChan, s.settings)
+	go cacheReleases(s)
+
+	log.Printf("Starting server on port %d ", *s.settings.ListenPort)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *s.settings.ListenPort), router(s)))
 }
 
-func watchChannels(s *server) {
+// cacheReleases caches polled releasesCache
+func cacheReleases(s *server) {
 	for {
-		select {
-		case s.releases = <-s.releasesChan:
-		case s.tillerReachable = <-s.tillerReachableChan:
-		}
+		releases := <-s.releasesChan
+		s.releasesCacheMutex.Lock()
+		s.releasesCache = releases
+		s.releasesCacheMutex.Unlock()
 	}
 }

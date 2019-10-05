@@ -9,10 +9,13 @@ import (
 	"strconv"
 )
 
+var instance *server
+
 func router(s *server) http.Handler {
+	instance = s
 	r := mux.NewRouter()
 	// API routes
-	r.HandleFunc("/api/releases", releasesHandler)
+	r.HandleFunc("/api/releasesCache", releasesHandler)
 	// Serve frontend
 	frontendDir := http.Dir(*s.settings.FrontendPath)
 	// Serve index.html if nothing matched
@@ -39,7 +42,7 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 func releasesHandler(w http.ResponseWriter, r *http.Request) {
 	filterStatuses := r.URL.Query()["status"]
 	resources := make([]*releaseResource, 0)
-	for _, r := range instance.releases.GetReleases() {
+	for _, r := range instance.getReleases().GetReleases() {
 		// Filter according to status
 		releaseStatus := strconv.FormatInt(int64(r.Info.Status.Code), 10)
 		if contains(filterStatuses, releaseStatus) {

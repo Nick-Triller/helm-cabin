@@ -4,6 +4,7 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
+	"io"
 	"k8s.io/helm/pkg/proto/hapi/release"
 	"k8s.io/helm/pkg/proto/hapi/services"
 	"k8s.io/helm/pkg/version"
@@ -29,19 +30,17 @@ func NewContext() context.Context {
 	return metadata.NewOutgoingContext(context.TODO(), md)
 }
 
-// PollReleases uses helm client to poll releases
+// PollReleases uses helm client to poll releasesCache
 func PollReleases(releasesChan chan *services.ListReleasesResponse, tillerReachableChan chan bool, settings *Settings) {
 	pollSleep := 6 * time.Second
 
-	// target := "tiller-deploy.svc.kube-system.cluster.local:44134"
-	// target = "localhost:8888"
+	conn, err := grpc.Dial(*settings.TillerAddress, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("failed to create connection: %v\n", err)
+	}
+	client := services.NewReleaseServiceClient(conn)
 
 	for {
-		conn, err := grpc.Dial(*settings.TillerAddress, grpc.WithInsecure())
-		if err != nil {
-			log.Fatalf("failed to connect: %v\n", err)
-		}
-		client := services.NewReleaseServiceClient(conn)
 		listReleaseRequest := &services.ListReleasesRequest{
 			Limit:  9999999999,
 			Offset: "",
@@ -61,22 +60,40 @@ func PollReleases(releasesChan chan *services.ListReleasesResponse, tillerReacha
 
 		if err != nil {
 			log.Printf("failed to create listReleasesClient: %v\n", err)
-			tillerReachableChan <- false
-			time.Sleep(2 * time.Second)
+			onError(tillerReachableChan)
 			continue
 		}
 
 		resp, err := listReleasesClient.Recv()
+		if err == io.EOF {
+			log.Println("Received EOF, no releases exist")
+			// EOF if no releases exist
+			emptyResp := &services.ListReleasesResponse{
+				Count:                0,
+				Next:                 "",
+				Total:                0,
+				Releases:             nil,
+				XXX_NoUnkeyedLiteral: struct{}{},
+				XXX_unrecognized:     nil,
+				XXX_sizecache:        0,
+			}
+			err = nil
+			resp = emptyResp
+		}
 		if err != nil {
 			log.Printf("failed to list releases: %v\n", err)
-			tillerReachableChan <- false
-			time.Sleep(2 * time.Second)
+			onError(tillerReachableChan)
 			continue
 		}
+
 		releasesChan <- resp
 		tillerReachableChan <- true
 
-		_ = conn.Close()
 		time.Sleep(pollSleep)
 	}
+}
+
+func onError(tillerReachableChan chan bool) {
+	tillerReachableChan <- false
+	time.Sleep(3 * time.Second)
 }
