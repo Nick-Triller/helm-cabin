@@ -22,8 +22,8 @@ func NewServer(settings *Settings) *server {
 	return &server{settings: settings}
 }
 
-// getReleases returns a list of cached releasesCache
-func (s *server) getReleases() *services.ListReleasesResponse {
+// getCachedReleases returns a list of cached releasesCache
+func (s *server) getCachedReleases() *services.ListReleasesResponse {
 	s.releasesCacheMutex.RLock()
 	releases := s.releasesCache
 	defer s.releasesCacheMutex.RUnlock()
