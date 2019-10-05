@@ -17,7 +17,7 @@ func router(s *server) http.Handler {
 	instance = s
 	r := mux.NewRouter()
 	// API routes
-	r.HandleFunc("/api/releasesCache", releasesHandler)
+	r.HandleFunc("/api/releases", releasesHandler)
 	// Serve frontend
 	frontendDir := http.Dir(*s.settings.FrontendPath)
 	// Serve index.html if nothing matched
