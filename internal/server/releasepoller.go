@@ -8,7 +8,7 @@ import (
 	"k8s.io/helm/pkg/proto/hapi/release"
 	"k8s.io/helm/pkg/proto/hapi/services"
 	"k8s.io/helm/pkg/version"
-	"log"
+	log "k8s.io/klog"
 	"time"
 )
 
@@ -59,14 +59,14 @@ func PollReleases(releasesChan chan *services.ListReleasesResponse, tillerReacha
 		listReleasesClient, err := client.ListReleases(ctx, listReleaseRequest)
 
 		if err != nil {
-			log.Printf("failed to create listReleasesClient: %v\n", err)
+			log.Warningf("failed to create listReleasesClient: %v\n", err)
 			onError(tillerReachableChan)
 			continue
 		}
 
 		resp, err := listReleasesClient.Recv()
 		if err == io.EOF {
-			log.Println("Received EOF, no releases exist")
+			log.V(1).Info("Received EOF, no releases exist")
 			// EOF if no releases exist
 			emptyResp := &services.ListReleasesResponse{
 				Count:                0,
@@ -81,7 +81,7 @@ func PollReleases(releasesChan chan *services.ListReleasesResponse, tillerReacha
 			resp = emptyResp
 		}
 		if err != nil {
-			log.Printf("failed to list releases: %v\n", err)
+			log.Errorf("failed to list releases: %v\n", err)
 			onError(tillerReachableChan)
 			continue
 		}
