@@ -32,6 +32,7 @@ require (
 	gopkg.in/gorp.v1 v1.7.2 // indirect
 	k8s.io/client-go v0.0.0
 	k8s.io/helm v2.14.3+incompatible
+	k8s.io/klog v0.3.1
 	k8s.io/kubernetes v1.15.0
 	k8s.io/utils v0.0.0-20190923111123-69764acb6e8e // indirect
 )
