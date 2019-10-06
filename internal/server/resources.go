@@ -6,7 +6,7 @@ import (
 	"k8s.io/helm/pkg/proto/hapi/release"
 )
 
-type releaseResource struct {
+type releaseListResource struct {
 	Name      string
 	Namespace string
 	Chart     *chartMetadata
@@ -75,8 +75,8 @@ type Status struct {
 	// LastTestSuiteRun *TestSuite `protobuf:"bytes,5,opt,name=last_test_suite_run,json=lastTestSuiteRun,proto3" json:"last_test_suite_run,omitempty"`
 }
 
-func releaseToResource(r *release.Release) *releaseResource {
-	resource := &releaseResource{
+func releaseToResourceList(r *release.Release) *releaseListResource {
+	resource := &releaseListResource{
 		Name:      r.Name,
 		Namespace: r.Namespace,
 		Chart: &chartMetadata{
