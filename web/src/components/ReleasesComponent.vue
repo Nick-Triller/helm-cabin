@@ -10,7 +10,7 @@
         <th>Chart</th>
       </tr>
       <tr v-for="release in releases" v-bind:key="release.id">
-        <td><router-link :to="'/releases/' + release.Name">{{ release.Name }}</router-link></td>
+        <td><router-link :to="`/releases/${release.Name}/${release.Version} `">{{ release.Name }}</router-link></td>
         <td>{{ release.Namespace }}</td>
         <td>{{ release.Info.Status.StatusId }}</td>
         <td>{{ release.Version }}</td>

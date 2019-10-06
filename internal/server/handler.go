@@ -18,6 +18,8 @@ func router(s *server) http.Handler {
 	r := mux.NewRouter()
 	// API routes
 	r.HandleFunc("/api/releases", releasesHandler)
+	r.HandleFunc("/api/releases/{name}/versions/{version}", releaseHandler)
+	r.HandleFunc("/api/releases/{name}/revisions/", revisionsHandler)
 	// Serve frontend
 	frontendDir := http.Dir(*s.settings.FrontendPath)
 	// Serve index.html if nothing matched
@@ -44,17 +46,50 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, path.Join(*instance.settings.FrontendPath, "index.html"))
 }
 
-// releaseHandler
+// releasesHandler
 func releasesHandler(w http.ResponseWriter, r *http.Request) {
 	filterStatuses := r.URL.Query()["status"]
-	resources := make([]*releaseResource, 0)
-	for _, r := range instance.getCachedReleases().GetReleases() {
-		// Filter according to status
-		releaseStatus := strconv.FormatInt(int64(r.Info.Status.Code), 10)
-		if contains(filterStatuses, releaseStatus) {
-			resources = append(resources, releaseToResource(r))
+	resources := make([]*releaseListResource, 0)
+	releases := instance.getCachedReleases()
+	if releases != nil {
+		for _, r := range releases.GetReleases() {
+			// Filter according to status
+			releaseStatus := strconv.FormatInt(int64(r.Info.Status.Code), 10)
+			if contains(filterStatuses, releaseStatus) {
+				resources = append(resources, releaseToResourceList(r))
+			}
 		}
 	}
 	jsonData, _ := json.MarshalIndent(resources, "", "  ")
+	_, _ = w.Write(jsonData)
+}
+
+// releaseHandler
+func releaseHandler(w http.ResponseWriter, r *http.Request) {
+	routeVars := mux.Vars(r)
+	releaseName := routeVars["name"]
+	releaseVersion := routeVars["version"]
+	releases := instance.getCachedReleases()
+	release := findRelease(releases, releaseName, releaseVersion)
+
+	if release == nil {
+		w.WriteHeader(404)
+		return
+	}
+
+	jsonData, _ := json.MarshalIndent(release, "", "  ")
+	_, _ = w.Write(jsonData)
+}
+
+// revisionsHandler
+func revisionsHandler(w http.ResponseWriter, r *http.Request) {
+	routeVars := mux.Vars(r)
+	releaseName := routeVars["name"]
+	revisions := findRevisions(instance.getCachedReleases(), releaseName)
+	versions := make([]int32, 0)
+	for _, revision := range(revisions) {
+		versions = append(versions, revision.Version)
+	}
+	jsonData, _ := json.MarshalIndent(versions, "", "  ")
 	_, _ = w.Write(jsonData)
 }

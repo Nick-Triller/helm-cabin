@@ -4,7 +4,7 @@ import ReleaseComponent from "./components/ReleaseComponent";
 
 const routes = [
   { path: '/', component: Releases },
-  { path: '/releases/:name', component: ReleaseComponent},
+  { path: '/releases/:name/:version', component: ReleaseComponent},
   { path: '*', component: NotFoundComponent }
 ];
 
