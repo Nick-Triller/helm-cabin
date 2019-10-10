@@ -1,4 +1,4 @@
-const statusIdToNameMap = {
+export const statusIdToNameMap = {
     0: "Unknown",
     1: "Deployed",
     2: "Deleted",
@@ -9,7 +9,3 @@ const statusIdToNameMap = {
     7: "Pending upgrade",
     8: "Pending rollback",
 };
-
-export function statusIdToName(id) {
-    return statusIdToNameMap[id];
-}

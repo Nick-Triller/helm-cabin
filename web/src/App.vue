@@ -2,14 +2,16 @@
   <div id="app">
     <NavbarComponent></NavbarComponent>
     <router-view></router-view>
+    <footer-component></footer-component>
   </div>
 </template>
 
 <script>
 import NavbarComponent from "./components/NavbarComponent";
+import FooterComponent from "./components/FooterComponent";
 export default {
   name: 'app',
-  components: {NavbarComponent},
+  components: {FooterComponent, NavbarComponent},
 }
 </script>
 
@@ -19,7 +21,7 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
-    padding: 1em;
+    padding: 1em 1em 0 1em;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;

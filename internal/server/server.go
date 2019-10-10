@@ -10,11 +10,10 @@ import (
 )
 
 type server struct {
-	releasesChan        chan *services.ListReleasesResponse
-	releasesCache       *services.ListReleasesResponse
-	releasesCacheMutex  sync.RWMutex
-	tillerReachableChan chan bool
-	settings            *Settings
+	releasesChan       chan *services.ListReleasesResponse
+	releasesCache      *services.ListReleasesResponse
+	releasesCacheMutex sync.RWMutex
+	settings           *Settings
 }
 
 // NewServer creates a server struct
@@ -32,17 +31,14 @@ func (s *server) getCachedReleases() *services.ListReleasesResponse {
 
 // Start is the main entrypoint that bootstraps the application
 func (s *server) Start() {
-	log.Info("helm client version: %s\n", version.GetVersion())
-
+	log.Infof("helm client version: %s\n", version.GetVersion())
+	connectTiller(s.settings)
 	s.releasesChan = make(chan *services.ListReleasesResponse)
-	s.tillerReachableChan = make(chan bool)
 
-	// Drain unused channel
-	go func() { for { <- s.tillerReachableChan }}()
-	go PollReleases(s.releasesChan, s.tillerReachableChan, s.settings)
+	go PollReleases(s.releasesChan)
 	go cacheReleases(s)
 
-	log.Info("Starting server on port %d ", *s.settings.ListenPort)
+	log.Infof("Starting server on port %d ", *s.settings.ListenPort)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *s.settings.ListenPort), router(s)))
 }
 

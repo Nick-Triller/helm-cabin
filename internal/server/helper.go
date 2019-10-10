@@ -3,6 +3,7 @@ package server
 import (
 	"k8s.io/helm/pkg/proto/hapi/release"
 	"k8s.io/helm/pkg/proto/hapi/services"
+	"strconv"
 )
 
 // contains checks if a string slice contains a string value in O(n) time
@@ -21,7 +22,7 @@ func findRelease(releases *services.ListReleasesResponse, releaseName string, ve
 		return nil
 	}
 	for _, x := range releases.GetReleases() {
-		if x.Name == releaseName {
+		if x.Name == releaseName && strconv.Itoa(int(x.Version)) == version {
 			return x
 		}
 	}
@@ -40,4 +41,24 @@ func findRevisions(releases *services.ListReleasesResponse, releaseName string) 
 		}
 	}
 	return revisions
+}
+
+func atoiOrDefault(in string, defaultValue int) int {
+	parsed, err := strconv.Atoi(in)
+	if err != nil {
+		return defaultValue
+	}
+	return parsed
+}
+
+func toStatusCodes(in []string) []release.Status_Code {
+	result := make([]release.Status_Code, len(in))
+	for _, v := range in {
+		vInt, err := strconv.Atoi(v)
+		if err != nil {
+			continue
+		}
+		result = append(result, release.Status_Code(vInt))
+	}
+	return result
 }

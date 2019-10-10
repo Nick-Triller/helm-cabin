@@ -17,14 +17,21 @@
       </tr>
       <tr>
         <td>Status</td>
-        <td>{{ release && release.info && release.info.status ? statusIdToName(release.info.status.code) : "-" }}</td>
+        <td>{{ release && release.info && release.info.status ? statusIdToNameMap[release.info.status.code] : "-" }}</td>
+      </tr>
+      <tr>
+        <td>Revisions</td>
+        <td>
+          <div v-for="version in revisionVersions" :key="version">
+            <router-link :to="`/releases/${name}/${version} `">Version {{ version }}</router-link>
+          </div>
+        </td>
       </tr>
     </table>
 
     <div>
         <h2>Table of Contents</h2>
         <ol>
-            <li><a href="#heading-revisions">Revisions</a></li>
             <li><a href="#heading-rendered-manifest">Rendered manifest</a></li>
             <li><a href="#heading-chart-details">Chart details</a>
                 <ol>
@@ -34,18 +41,6 @@
                 </ol>
             </li>
         </ol>
-    </div>
-
-    <div>
-      <h2 id="heading-revisions">Revisions</h2>
-      <table>
-        <tr>
-          <th>Revision</th>
-        </tr>
-        <tr v-for="version in revisionVersions" :key="version">
-          <td><router-link :to="`/releases/${name}/${version} `">Version {{ version }}</router-link></td>
-        </tr>
-      </table>
     </div>
 
     <div v-if="release && release.manifest">
@@ -97,7 +92,7 @@
 <script>
   import axios from "axios"
   import { Base64 } from "js-base64"
-  import { statusIdToName } from  "../helper"
+  import { statusIdToNameMap } from  "../helper"
   import 'prismjs'
   import 'prismjs/themes/prism.css'
   import 'prismjs/components/prism-smarty'
@@ -113,6 +108,7 @@
         release: null,
         name: this.$route.params.name,
         version: this.$route.params.version,
+        statusIdToNameMap
       }
     },
     watch: {
@@ -122,9 +118,6 @@
       }
     },
     methods: {
-      statusIdToName(id) {
-        return statusIdToName(id);
-      },
       decodeBase64(data) {
         return Base64.decode(data)
       },

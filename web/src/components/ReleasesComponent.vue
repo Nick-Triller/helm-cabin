@@ -1,53 +1,67 @@
 <template>
   <div>
     <h1>Helm Cabin</h1>
-    <table>
-      <tr>
-        <th>Name</th>
-        <th>Namespace</th>
-        <th>Status</th>
-        <th>Revision</th>
-        <th>Chart</th>
-      </tr>
-      <tr v-for="release in releases" v-bind:key="release.id">
-        <td><router-link :to="`/releases/${release.Name}/${release.Version} `">{{ release.Name }}</router-link></td>
-        <td>{{ release.Namespace }}</td>
-        <td>{{ release.Info.Status.StatusId }}</td>
-        <td>{{ release.Version }}</td>
-        <td>
-          <a :href="release.Chart.Home">{{ release.Chart.Name }}</a>
-        </td>
-      </tr>
-    </table>
+
+    <div v-if="releasesList">
+
+      <!--releases-filter :releases-list="releasesList"/-->
+
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Namespace</th>
+          <th>Status</th>
+          <th>Revision</th>
+          <th>Chart</th>
+        </tr>
+        <tr v-for="release in releasesList.releases" v-bind:key="release.id">
+          <td><router-link :to="`/releases/${release.name}/${release.version} `">{{ release.name }}</router-link></td>
+          <td>{{ release.namespace }}</td>
+          <td>{{ statusIdToNameMap[release.info.status.code] }}</td>
+          <td>{{ release.version }}</td>
+          <td>
+            <a :href="release.chart.metadata.home">{{ release.chart.metadata.name }}</a>
+          </td>
+        </tr>
+      </table>
+
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import ReleasesFilterComponent from "./ReleasesFilterComponent";
+import {statusIdToNameMap} from "../helper";
 
 export default {
   name: 'ReleasesComponent',
+  components: {
+    releasesFilter: ReleasesFilterComponent,
+  },
   data() {
     return {
-      releases: null,
+      releasesList: null,
+      statusIdToNameMap
+    }
+  },
+  methods: {
+    getReleases() {
+      axios
+        .get('/api/releases?status=0&status=1&status=2&status=3&status=4&status=5&status=6&status=7&status=8&offset=')
+        .then(response => (this.releasesList = response.data))
     }
   },
   props: {},
   mounted () {
-    const getReleases = () => {
-      axios
-              .get('/api/releases?status=0&status=1&status=2&status=3&status=4&status=5&status=6&status=7&status=8')
-              .then(response => (this.releases = response.data))
-    };
-    setInterval(getReleases, 5000);
-    getReleases();
+    setInterval(this.getReleases, 5000);
+    this.getReleases();
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
- table {
-   width: 100%;
- }
+   table {
+     width: 100%;
+   }
 </style>

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"strconv"
 )
 
 // instance references the server struct for which the router handler was created
@@ -48,20 +47,35 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 
 // releasesHandler
 func releasesHandler(w http.ResponseWriter, r *http.Request) {
-	filterStatuses := r.URL.Query()["status"]
-	resources := make([]*releaseListResource, 0)
-	releases := instance.getCachedReleases()
-	if releases != nil {
-		for _, r := range releases.GetReleases() {
-			// Filter according to status
-			releaseStatus := strconv.FormatInt(int64(r.Info.Status.Code), 10)
-			if contains(filterStatuses, releaseStatus) {
-				resources = append(resources, releaseToResourceList(r))
-			}
-		}
-	}
-	jsonData, _ := json.MarshalIndent(resources, "", "  ")
+	//qparam := r.URL.Query()
+	//statusCodes := qparam["statusCodes"]
+	//limit := atoiOrDefault(qparam.Get("limit"), 9999999)
+	//offset := qparam.Get("offset")
+	//sortBy := atoiOrDefault(qparam.Get("sortBy"), int(services.ListSort_LAST_RELEASED))
+	//filter := qparam.Get("filter")
+	//sortOrder := atoiOrDefault(qparam.Get("sortOrder"), int(services.ListSort_DESC))
+	//namespace := qparam.Get("namespace") // All namespace if empty
+
+	//listReleasesRequest := &services.ListReleasesRequest{
+	//	Limit:       int64(limit),
+	//	Offset:      offset,
+	//	SortBy:      services.ListSort_SortBy(sortBy),
+	//	Filter:      filter,
+	//	SortOrder:   services.ListSort_SortOrder(sortOrder),
+	//	StatusCodes: toStatusCodes(statusCodes),
+	//	Namespace:   namespace,
+	//}
+	// resp, err := getReleasesList(listReleasesRequest)
+
+	resp := instance.getCachedReleases()
+	// if err != nil {
+	//	w.WriteHeader(500)
+	//	return
+	// }
+
+	jsonData, _ := json.MarshalIndent(resp, "", "  ")
 	_, _ = w.Write(jsonData)
+	return
 }
 
 // releaseHandler
@@ -87,7 +101,7 @@ func revisionsHandler(w http.ResponseWriter, r *http.Request) {
 	releaseName := routeVars["name"]
 	revisions := findRevisions(instance.getCachedReleases(), releaseName)
 	versions := make([]int32, 0)
-	for _, revision := range(revisions) {
+	for _, revision := range revisions {
 		versions = append(versions, revision.Version)
 	}
 	jsonData, _ := json.MarshalIndent(versions, "", "  ")
