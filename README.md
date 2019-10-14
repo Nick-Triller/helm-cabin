@@ -12,6 +12,11 @@ Tiller without hiding information behind additional abstractions.
 I decided to scratch my own itch and started Helm Cabin as part of 
 [Hacktoberfest 2019](https://hacktoberfest.digitalocean.com/). 
 
+## Features
+
+- List all releases with any status (deleted, superseded, deployed, etc.)
+- View revisions, rendered manifest, chart templates, chart values and chart files for any release
+
 ## Install
 
 Install Helm Cabin with the provided chart. 
