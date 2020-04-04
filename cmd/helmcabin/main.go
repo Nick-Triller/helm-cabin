@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Nick-Triller/helmcabin/internal/server"
+	"github.com/Nick-Triller/helm-cabin/internal/server"
 )
 
 func main() {
