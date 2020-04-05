@@ -14,13 +14,14 @@
           <th>Revision</th>
           <th>Chart</th>
         </tr>
-        <tr v-for="release in releasesList.releases" v-bind:key="release.id">
-          <td><router-link :to="`/releases/${release.name}/${release.version} `">{{ release.name }}</router-link></td>
-          <td>{{ release.namespace }}</td>
-          <td>{{ statusIdToNameMap[release.info.status.code] }}</td>
-          <td>{{ release.version }}</td>
+        <tr v-for="release in releasesList" v-bind:key="release.Name">
+          <td><router-link :to="`/releases/${release.Name}/${release.Version} `">{{ release.Name }}</router-link></td>
+          <td>{{ release.Namespace }}</td>
+          <td>{{release.Info.Status.StatusID}}</td>
+          <td>{{ release.Version }}</td>
           <td>
-            <a :href="release.chart.metadata.home">{{ release.chart.metadata.name }}</a>
+            <a v-if="release.Chart.Home" :href="release.Chart.Home">{{ release.Chart.Name }}</a>
+            <span v-if="!release.Chart.Home">{{ release.Chart.Name }}</span>
           </td>
         </tr>
       </table>
@@ -31,24 +32,21 @@
 
 <script>
 import axios from 'axios'
-import ReleasesFilterComponent from "./ReleasesFilterComponent";
-import {statusIdToNameMap} from "../helper";
 
 export default {
   name: 'ReleasesComponent',
   components: {
-    releasesFilter: ReleasesFilterComponent,
+
   },
   data() {
     return {
-      releasesList: null,
-      statusIdToNameMap
+      releasesList: null
     }
   },
   methods: {
     getReleases() {
       axios
-        .get('/api/releases?status=0&status=1&status=2&status=3&status=4&status=5&status=6&status=7&status=8&offset=')
+        .get('/api/releases')
         .then(response => (this.releasesList = response.data))
     }
   },

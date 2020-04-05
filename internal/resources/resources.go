@@ -1,20 +1,41 @@
-package server
+package resources
 
 import (
 	"github.com/golang/protobuf/ptypes/timestamp"
-	"k8s.io/helm/pkg/proto/hapi/chart"
-	"k8s.io/helm/pkg/proto/hapi/release"
 )
 
-type releaseListResource struct {
+type File struct {
+	TypeUrl string
+	Value   []byte
+}
+
+type ReleaseListResource struct {
 	Name      string
 	Namespace string
-	Chart     *chartMetadata
+	Templates []Template
+	Files     []File
+	Values    string
+	Chart     *ChartMetadata
 	Info      *ReleaseInfo
+	Manifest  string
 	Version   int32
 }
 
-type chartMetadata struct {
+// Template represents a helm chart template
+type Template struct {
+	Name string
+	Data []byte
+}
+
+// Maintainer represents a maintainer (specified in chart.yaml)
+type Maintainer struct {
+	Name  string
+	Email string
+	Url   string
+}
+
+// ChartMetadata represents data about a chart
+type ChartMetadata struct {
 	// The name of the chart
 	Name string
 	// The URL to a relevant project page, git repo, or contact person
@@ -28,7 +49,7 @@ type chartMetadata struct {
 	// A list of string keywords
 	Keywords []string
 	// A list of name and URL/email address combinations for the maintainer(s)
-	Maintainers []*chart.Maintainer
+	Maintainers []Maintainer
 	// The name of the template engine to use. Defaults to 'gotpl'.
 	Engine string
 	// The URL to an icon file.
@@ -68,49 +89,8 @@ type ReleaseInfo struct {
 type Status struct {
 	// This field differs from Helm structs. Contains the enum string of status code.
 	StatusID string
-	// Cluster resources as kubectl would print them.
-	Resources string
 	// Contains the rendered templates/NOTES.txt if available
 	Notes string
 	// LastTestSuiteRun provides results on the last test run on a release
 	// LastTestSuiteRun *TestSuite `protobuf:"bytes,5,opt,name=last_test_suite_run,json=lastTestSuiteRun,proto3" json:"last_test_suite_run,omitempty"`
-}
-
-func releaseToResourceList(r *release.Release) *releaseListResource {
-	resource := &releaseListResource{
-		Name:      r.Name,
-		Namespace: r.Namespace,
-		Chart: &chartMetadata{
-			Name:          r.Chart.Metadata.Name,
-			Home:          r.Chart.Metadata.Home,
-			Sources:       r.Chart.Metadata.Sources,
-			Version:       r.Chart.Metadata.Version,
-			Description:   r.Chart.Metadata.Description,
-			Keywords:      r.Chart.Metadata.Keywords,
-			Maintainers:   r.Chart.Metadata.Maintainers,
-			Engine:        r.Chart.Metadata.Engine,
-			Icon:          r.Chart.Metadata.Icon,
-			APIVersion:    r.Chart.Metadata.ApiVersion,
-			Condition:     r.Chart.Metadata.Condition,
-			Tags:          r.Chart.Metadata.Tags,
-			AppVersion:    r.Chart.Metadata.ApiVersion,
-			Deprecated:    r.Chart.Metadata.Deprecated,
-			TillerVersion: r.Chart.Metadata.TillerVersion,
-			Annotations:   r.Chart.Metadata.Annotations,
-			KubeVersion:   r.Chart.Metadata.KubeVersion,
-		},
-		Info: &ReleaseInfo{
-			Status: &Status{
-				StatusID:  r.Info.Status.Code.String(),
-				Resources: r.Info.Status.Resources,
-				Notes:     r.Info.Status.Notes,
-			},
-			FirstDeployed: r.Info.FirstDeployed,
-			LastDeployed:  r.Info.LastDeployed,
-			Deleted:       r.Info.Deleted,
-			Description:   r.Info.Description,
-		},
-		Version: r.Version,
-	}
-	return resource
 }
