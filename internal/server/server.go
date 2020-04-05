@@ -8,7 +8,7 @@ import (
 	"github.com/Nick-Triller/helm-cabin/internal/helm2"
 	"k8s.io/helm/pkg/proto/hapi/services"
 	"k8s.io/helm/pkg/version"
-	log "k8s.io/klog"
+	log "github.com/sirupsen/logrus"
 )
 
 // Server is the main application struct
@@ -34,13 +34,13 @@ func (s *Server) getCachedReleases() *services.ListReleasesResponse {
 
 // Start is the main entrypoint that bootstraps the application
 func (s *Server) Start() {
-	log.Infof("helm client version: %s\n", version.GetVersion())
+	log.Infof("helm client version: %s", version.GetVersion())
 	s.releasesChan = make(chan *services.ListReleasesResponse)
 
 	go helm2.PollReleases(s.releasesChan, s.settings)
 	go cacheReleases(s)
 
-	log.Infof("Starting server on %s ", *s.settings.ListenAddress)
+	log.Infof("Starting server on %s", *s.settings.ListenAddress)
 	log.Fatal(http.ListenAndServe(*s.settings.ListenAddress, router(s)))
 }
 

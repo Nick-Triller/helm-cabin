@@ -8,12 +8,12 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/gorilla/mux v1.7.0
 	github.com/magefile/mage v1.9.0
+	github.com/sirupsen/logrus v1.5.0
 	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3 // indirect
 	golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db // indirect
 	google.golang.org/genproto v0.0.0-20170731182057-09f6ed296fc6 // indirect
 	google.golang.org/grpc v1.13.0
 	k8s.io/helm v2.14.3+incompatible
-	k8s.io/klog v0.3.1
 )
 
 replace (
