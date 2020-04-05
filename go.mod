@@ -3,37 +3,17 @@ module github.com/Nick-Triller/helm-cabin
 go 1.12
 
 require (
-	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21 // indirect
-	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
-	github.com/Masterminds/sprig v2.21.0+incompatible // indirect
-	github.com/canthefason/go-watcher v0.2.4 // indirect
-	github.com/codegangsta/envy v0.0.0-20141216192214-4b78388c8ce4 // indirect
-	github.com/codegangsta/gin v0.0.0-20171026143024-cafe2ce98974 // indirect
-	github.com/cyphar/filepath-securejoin v0.2.2 // indirect
-	github.com/fatih/color v1.7.0 // indirect
-	github.com/gobwas/glob v0.2.3 // indirect
+	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/gorilla/mux v1.7.0
-	github.com/howeyc/fsnotify v0.9.0 // indirect
-	github.com/huandu/xstrings v1.2.0 // indirect
-	github.com/imdario/mergo v0.3.7 // indirect
-	github.com/jmoiron/sqlx v1.2.0 // indirect
-	github.com/lib/pq v1.2.0 // indirect
 	github.com/magefile/mage v1.9.0
-	github.com/mattn/go-colorable v0.1.2 // indirect
-	github.com/pilu/config v0.0.0-20131214182432-3eb99e6c0b9a // indirect
-	github.com/pilu/fresh v0.0.0-20190826141211-0fa698148017 // indirect
-	github.com/pkg/errors v0.8.1 // indirect
-	github.com/rubenv/sql-migrate v0.0.0-20190902133344-8926f37f0bc1 // indirect
-	golang.org/x/crypto v0.0.0-20190927123631-a832865fa7ad // indirect
-	golang.org/x/time v0.0.0-20190921001708-c4c64cad1fd0 // indirect
+	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3 // indirect
+	golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db // indirect
+	google.golang.org/genproto v0.0.0-20170731182057-09f6ed296fc6 // indirect
 	google.golang.org/grpc v1.13.0
-	gopkg.in/gorp.v1 v1.7.2 // indirect
 	k8s.io/helm v2.14.3+incompatible
 	k8s.io/klog v0.3.1
-	k8s.io/kubernetes v1.15.0 // indirect
-	k8s.io/utils v0.0.0-20190923111123-69764acb6e8e // indirect
 )
 
 replace (
