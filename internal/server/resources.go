@@ -34,7 +34,7 @@ type chartMetadata struct {
 	// The URL to an icon file.
 	Icon string
 	// The API Version of this chart.
-	ApiVersion string
+	APIVersion string
 	// The condition to check to enable chart
 	Condition string
 	// The tags to check to enable chart
@@ -53,6 +53,7 @@ type chartMetadata struct {
 	KubeVersion string
 }
 
+// ReleaseInfo contains information about a Helm Release
 type ReleaseInfo struct {
 	Status        *Status
 	FirstDeployed *timestamp.Timestamp
@@ -66,7 +67,7 @@ type ReleaseInfo struct {
 // Status defines the status of a release.
 type Status struct {
 	// This field differs from Helm structs. Contains the enum string of status code.
-	StatusId string
+	StatusID string
 	// Cluster resources as kubectl would print them.
 	Resources string
 	// Contains the rendered templates/NOTES.txt if available
@@ -89,7 +90,7 @@ func releaseToResourceList(r *release.Release) *releaseListResource {
 			Maintainers:   r.Chart.Metadata.Maintainers,
 			Engine:        r.Chart.Metadata.Engine,
 			Icon:          r.Chart.Metadata.Icon,
-			ApiVersion:    r.Chart.Metadata.ApiVersion,
+			APIVersion:    r.Chart.Metadata.ApiVersion,
 			Condition:     r.Chart.Metadata.Condition,
 			Tags:          r.Chart.Metadata.Tags,
 			AppVersion:    r.Chart.Metadata.ApiVersion,
@@ -100,7 +101,7 @@ func releaseToResourceList(r *release.Release) *releaseListResource {
 		},
 		Info: &ReleaseInfo{
 			Status: &Status{
-				StatusId:  r.Info.Status.Code.String(),
+				StatusID:  r.Info.Status.Code.String(),
 				Resources: r.Info.Status.Resources,
 				Notes:     r.Info.Status.Notes,
 			},

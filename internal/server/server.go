@@ -2,14 +2,16 @@ package server
 
 import (
 	"fmt"
+	"net/http"
+	"sync"
+
 	"k8s.io/helm/pkg/proto/hapi/services"
 	"k8s.io/helm/pkg/version"
 	log "k8s.io/klog"
-	"net/http"
-	"sync"
 )
 
-type server struct {
+// Server is the main application struct
+type Server struct {
 	releasesChan       chan *services.ListReleasesResponse
 	releasesCache      *services.ListReleasesResponse
 	releasesCacheMutex sync.RWMutex
@@ -17,12 +19,12 @@ type server struct {
 }
 
 // NewServer creates a server struct
-func NewServer(settings *Settings) *server {
-	return &server{settings: settings}
+func NewServer(settings *Settings) *Server {
+	return &Server{settings: settings}
 }
 
 // getCachedReleases returns a list of cached releasesCache
-func (s *server) getCachedReleases() *services.ListReleasesResponse {
+func (s *Server) getCachedReleases() *services.ListReleasesResponse {
 	s.releasesCacheMutex.RLock()
 	releases := s.releasesCache
 	defer s.releasesCacheMutex.RUnlock()
@@ -30,7 +32,7 @@ func (s *server) getCachedReleases() *services.ListReleasesResponse {
 }
 
 // Start is the main entrypoint that bootstraps the application
-func (s *server) Start() {
+func (s *Server) Start() {
 	log.Infof("helm client version: %s\n", version.GetVersion())
 	connectTiller(s.settings)
 	s.releasesChan = make(chan *services.ListReleasesResponse)
@@ -43,7 +45,7 @@ func (s *server) Start() {
 }
 
 // cacheReleases caches polled releasesCache
-func cacheReleases(s *server) {
+func cacheReleases(s *Server) {
 	for {
 		releases := <-s.releasesChan
 		s.releasesCacheMutex.Lock()
