@@ -16,7 +16,7 @@ func contains(s []string, e string) bool {
 }
 
 // findRelease finds a release in a ListReleasesResponse by name and version
-func findRelease(releases []resources.ReleaseListResource, releaseName string, version string) *resources.ReleaseListResource {
+func findRelease(releases []resources.ReleaseResource, releaseName string, version string) *resources.ReleaseResource {
 	if releases == nil {
 		return nil
 	}
@@ -29,11 +29,11 @@ func findRelease(releases []resources.ReleaseListResource, releaseName string, v
 }
 
 // findRevisions finds all revisions of a release in a ListRleasesResponse by name
-func findRevisions(releases []resources.ReleaseListResource, releaseName string) []resources.ReleaseListResource {
+func findRevisions(releases []resources.ReleaseResource, releaseName string) []resources.ReleaseResource {
 	if releases == nil {
 		return nil
 	}
-	revisions := make([]resources.ReleaseListResource, 0)
+	revisions := make([]resources.ReleaseResource, 0)
 	for _, x := range releases {
 		if x.Name == releaseName {
 			revisions = append(revisions, x)

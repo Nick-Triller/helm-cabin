@@ -4,12 +4,14 @@ import (
 	"github.com/golang/protobuf/ptypes/timestamp"
 )
 
+// File represents a helm chart file
 type File struct {
-	TypeUrl string
+	TypeURL string
 	Value   []byte
 }
 
-type ReleaseListResource struct {
+// ReleaseResource represents a helm2 or helm3 release
+type ReleaseResource struct {
 	Name      string
 	Namespace string
 	Templates []Template
@@ -31,7 +33,7 @@ type Template struct {
 type Maintainer struct {
 	Name  string
 	Email string
-	Url   string
+	URL   string
 }
 
 // ChartMetadata represents data about a chart

@@ -80,9 +80,9 @@
 
     <div v-if="release && release.Files">
       <h2 id="heading-chart-files">Chart files</h2>
-      <div v-for="file in release.Files" :key="file.TypeUrl">
-        <b>{{file.TypeUrl}}</b>
-          <prism :language="file.TypeUrl.endsWith('.md') ? 'markdown' : 'markup'">{{decodeBase64(file.Value)}}</prism>
+      <div v-for="file in release.Files" :key="file.TypeURL">
+        <b>{{file.TypeURL}}</b>
+          <prism :language="file.TypeURL.endsWith('.md') ? 'markdown' : 'markup'">{{decodeBase64(file.Value)}}</prism>
       </div>
     </div>
 

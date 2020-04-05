@@ -17,7 +17,8 @@ import (
 	rspb "helm.sh/helm/v3/pkg/release"
 )
 
-func PollReleases(releasesChan chan []resources.ReleaseListResource, settings *settings.Settings) {
+// PollReleases retrieves Helm3 releases from Kubernetes secrets
+func PollReleases(releasesChan chan []resources.ReleaseResource, settings *settings.Settings) {
 	connectKubernetes()
 	pollSleep := 6 * time.Second
 	for {
@@ -36,8 +37,8 @@ func PollReleases(releasesChan chan []resources.ReleaseListResource, settings *s
 	}
 }
 
-func convertResponseToReleaseListResources(resp *v1.SecretList) []resources.ReleaseListResource {
-	releaseResources := make([]resources.ReleaseListResource, len(resp.Items))
+func convertResponseToReleaseListResources(resp *v1.SecretList) []resources.ReleaseResource {
+	releaseResources := make([]resources.ReleaseResource, len(resp.Items))
 	for i, secret := range resp.Items {
 		helm3Release, err := decodeRelease(string(secret.Data["release"]))
 		if err != nil {
@@ -49,11 +50,11 @@ func convertResponseToReleaseListResources(resp *v1.SecretList) []resources.Rele
 	return releaseResources
 }
 
-func releaseListResourceFrom(r *rspb.Release) resources.ReleaseListResource {
+func releaseListResourceFrom(r *rspb.Release) resources.ReleaseResource {
 	files := make([]resources.File, len(r.Chart.Files))
 	for i, helm3ChartFile := range r.Chart.Files {
 		template := resources.File{
-			TypeUrl: helm3ChartFile.Name,
+			TypeURL: helm3ChartFile.Name,
 			Value:   helm3ChartFile.Data,
 		}
 		files[i] = template
@@ -73,17 +74,17 @@ func releaseListResourceFrom(r *rspb.Release) resources.ReleaseListResource {
 		maintainer := resources.Maintainer{
 			Name:  helm3Mantainer.Name,
 			Email: helm3Mantainer.Email,
-			Url:   helm3Mantainer.URL,
+			URL:   helm3Mantainer.URL,
 		}
 		maintainers[i] = maintainer
 	}
 
-	return resources.ReleaseListResource{
+	return resources.ReleaseResource{
 		Name:      r.Name,
 		Namespace: r.Namespace,
 		Templates: templates,
 		Files:     files,
-		Values:    mapToJson(r.Chart.Values),
+		Values:    mapToJSON(r.Chart.Values),
 		Chart: &resources.ChartMetadata{
 			Name:          r.Chart.Metadata.Name,
 			Home:          r.Chart.Metadata.Home,
@@ -128,7 +129,7 @@ func releaseListResourceFrom(r *rspb.Release) resources.ReleaseListResource {
 	}
 }
 
-func mapToJson(structured map[string]interface{}) string {
+func mapToJSON(structured map[string]interface{}) string {
 	data, err := json.MarshalIndent(structured, "", "  ")
 	if err != nil {
 		log.Warn("Failed to map chart values to json")

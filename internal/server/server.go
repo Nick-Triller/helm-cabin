@@ -14,8 +14,8 @@ import (
 
 // Server is the main application struct
 type Server struct {
-	releasesChan       chan []resources.ReleaseListResource
-	releasesCache      []resources.ReleaseListResource
+	releasesChan       chan []resources.ReleaseResource
+	releasesCache      []resources.ReleaseResource
 	releasesCacheMutex sync.RWMutex
 	settings           *settings.Settings
 }
@@ -24,12 +24,12 @@ type Server struct {
 func NewServer(settings *settings.Settings) *Server {
 	return &Server{
 		settings: settings,
-		releasesChan: make(chan []resources.ReleaseListResource),
+		releasesChan: make(chan []resources.ReleaseResource),
 	}
 }
 
 // getCachedReleases returns a list of cached releasesCache
-func (s *Server) getCachedReleases() []resources.ReleaseListResource {
+func (s *Server) getCachedReleases() []resources.ReleaseResource {
 	s.releasesCacheMutex.RLock()
 	releases := s.releasesCache
 	defer s.releasesCacheMutex.RUnlock()

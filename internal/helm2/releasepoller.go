@@ -32,7 +32,7 @@ func NewContext() context.Context {
 }
 
 // PollReleases uses helm client to poll releasesCache
-func PollReleases(releasesChan chan []resources.ReleaseListResource, settings *settings.Settings) {
+func PollReleases(releasesChan chan []resources.ReleaseResource, settings *settings.Settings) {
 	connectTiller(settings)
 	pollSleep := 6 * time.Second
 	for {
@@ -62,20 +62,20 @@ func PollReleases(releasesChan chan []resources.ReleaseListResource, settings *s
 	}
 }
 
-func convertResponseToReleaseListResources(resp *services.ListReleasesResponse) []resources.ReleaseListResource {
-	releaseResources := make([]resources.ReleaseListResource, len(resp.Releases))
+func convertResponseToReleaseListResources(resp *services.ListReleasesResponse) []resources.ReleaseResource {
+	releaseResources := make([]resources.ReleaseResource, len(resp.Releases))
 	for i, helm2Release := range resp.GetReleases() {
 		releaseResources[i] = releaseListResourceFrom(helm2Release)
 	}
 	return releaseResources
 }
 
-func releaseListResourceFrom(r *release.Release) resources.ReleaseListResource {
+func releaseListResourceFrom(r *release.Release) resources.ReleaseResource {
 	files := make([]resources.File, len(r.Chart.Files))
 	for i, helm2ChartFile := range r.Chart.Files {
 		template := resources.File{
-			TypeUrl:  helm2ChartFile.TypeUrl,
-			Value: helm2ChartFile.Value,
+			TypeURL: helm2ChartFile.TypeUrl,
+			Value:   helm2ChartFile.Value,
 		}
 		files[i] = template
 	}
@@ -94,12 +94,12 @@ func releaseListResourceFrom(r *release.Release) resources.ReleaseListResource {
 		maintainer := resources.Maintainer{
 			Name:  helm2Mantainer.Name,
 			Email: helm2Mantainer.Email,
-			Url:   helm2Mantainer.Url,
+			URL:   helm2Mantainer.Url,
 		}
 		maintainers[i] = maintainer
 	}
 
-	return resources.ReleaseListResource{
+	return resources.ReleaseResource{
 		Name:      r.Name,
 		Namespace: r.Namespace,
 		Templates: templates,
