@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"sync"
 
@@ -40,8 +39,8 @@ func (s *Server) Start() {
 	go PollReleases(s.releasesChan)
 	go cacheReleases(s)
 
-	log.Infof("Starting server on port %d ", *s.settings.ListenPort)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *s.settings.ListenPort), router(s)))
+	log.Infof("Starting server on %s ", *s.settings.ListenAddress)
+	log.Fatal(http.ListenAndServe(*s.settings.ListenAddress, router(s)))
 }
 
 // cacheReleases caches polled releasesCache

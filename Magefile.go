@@ -19,7 +19,7 @@ func BuildDockerImage() error {
 // This target is supposed to be run in development only and assumes tiller is
 // reachable at 127.0.0.1:44134
 func RunBackend() error {
-	return sh.RunV("go", "run", "cmd/helmcabin/main.go", "--tillerAddress", "127.0.0.1:44134")
+	return sh.RunV("go", "run", "cmd/helmcabin/main.go", "--tillerAddress", "127.0.0.1:44134", "--listenAddress", "localhost:8080")
 }
 
 // BuildServerAll locally builds the artifacts for all supported platforms
