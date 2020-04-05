@@ -26,13 +26,11 @@ func PollReleases(releasesChan chan []resources.ReleaseResource, settings *setti
 			FieldSelector: "type=helm.sh/release.v1",
 			Watch:         false,
 		})
-
 		if err != nil {
 			log.Warningf("Failed to retrieve releases: %v", err)
 		} else {
 			releasesChan <- convertResponseToReleaseListResources(resp)
 		}
-
 		time.Sleep(pollSleep)
 	}
 }

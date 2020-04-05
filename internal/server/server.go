@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	log "github.com/sirupsen/logrus"
-	"k8s.io/helm/pkg/version"
+	h2version "k8s.io/helm/pkg/version"
 )
 
 // Server is the main application struct
@@ -38,18 +38,16 @@ func (s *Server) getCachedReleases() []resources.ReleaseResource {
 
 // Start is the main entrypoint that bootstraps the application
 func (s *Server) Start() {
-	helmVersion := 3
-
-	switch helmVersion {
+	switch s.settings.HelmVersion {
 	case 2:
-		log.Infof("helm client version: %s", version.GetVersion())
+		log.Infof("helm client version: %s", h2version.GetVersion())
 		go helm2.PollReleases(s.releasesChan, s.settings)
 	case 3:
 		go helm3.PollReleases(s.releasesChan, s.settings)
 	default:
-		log.Fatalf("Unknown helm version: %d", helmVersion)
+		log.Fatalf("Unknown helm version: %d", s.settings.HelmVersion)
 	}
-	log.Infof("Running in helm %d mode", helmVersion)
+	log.Infof("Running in helm %d mode", s.settings.HelmVersion)
 
 	go cacheReleases(s)
 
