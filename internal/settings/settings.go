@@ -13,9 +13,9 @@ type Settings struct {
 	FrontendPath  *string
 }
 
-// SettingsFromCli reads the CLI options and constructs a Settings
+// FromCli reads the CLI options and constructs a Settings
 // object from them.
-func SettingsFromCli() *Settings {
+func FromCli() *Settings {
 	defaultTillerAddress := "tiller-deploy.kube-system.svc.cluster.local:44134"
 	tillerAddress := flag.String("tillerAddress", defaultTillerAddress, "Tiller address")
 	listenAddress := flag.String("listenAddress", ":8080", "Server listen address")

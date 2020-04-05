@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	server.NewServer(settings.SettingsFromCli()).Start()
+	server.NewServer(settings.FromCli()).Start()
 }
