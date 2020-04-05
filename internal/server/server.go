@@ -1,9 +1,11 @@
 package server
 
 import (
+	settings2 "github.com/Nick-Triller/helm-cabin/internal/settings"
 	"net/http"
 	"sync"
 
+	"github.com/Nick-Triller/helm-cabin/internal/helm2"
 	"k8s.io/helm/pkg/proto/hapi/services"
 	"k8s.io/helm/pkg/version"
 	log "k8s.io/klog"
@@ -14,11 +16,11 @@ type Server struct {
 	releasesChan       chan *services.ListReleasesResponse
 	releasesCache      *services.ListReleasesResponse
 	releasesCacheMutex sync.RWMutex
-	settings           *Settings
+	settings           *settings2.Settings
 }
 
 // NewServer creates a server struct
-func NewServer(settings *Settings) *Server {
+func NewServer(settings *settings2.Settings) *Server {
 	return &Server{settings: settings}
 }
 
@@ -33,10 +35,9 @@ func (s *Server) getCachedReleases() *services.ListReleasesResponse {
 // Start is the main entrypoint that bootstraps the application
 func (s *Server) Start() {
 	log.Infof("helm client version: %s\n", version.GetVersion())
-	connectTiller(s.settings)
 	s.releasesChan = make(chan *services.ListReleasesResponse)
 
-	go PollReleases(s.releasesChan)
+	go helm2.PollReleases(s.releasesChan, s.settings)
 	go cacheReleases(s)
 
 	log.Infof("Starting server on %s ", *s.settings.ListenAddress)

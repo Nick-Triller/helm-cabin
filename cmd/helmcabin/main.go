@@ -2,8 +2,9 @@ package main
 
 import (
 	"github.com/Nick-Triller/helm-cabin/internal/server"
+	"github.com/Nick-Triller/helm-cabin/internal/settings"
 )
 
 func main() {
-	server.NewServer(server.SettingsFromCli()).Start()
+	server.NewServer(settings.SettingsFromCli()).Start()
 }
