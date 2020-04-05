@@ -1,9 +1,10 @@
 package helm3
 
 import (
-	"flag"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 )
@@ -11,20 +12,16 @@ import (
 var clientset *kubernetes.Clientset
 
 func connectKubernetes() {
-	var kubeconfig *string
-	if home := homeDir(); home != "" {
-		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
-	} else {
-		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
-	}
-
-	// use the current context in kubeconfig
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	// Try in-cluster first
+	config, err := rest.InClusterConfig()
 	if err != nil {
-		panic(err.Error())
+		// Use the current context in kubeconfig
+		kubeconfigPath := filepath.Join(homeDir(), ".kube", "config")
+		config, err = clientcmd.BuildConfigFromFlags("", kubeconfigPath)
+		if err != nil {
+			log.Fatalf("Failed to create Kubernetes connection config")
+		}
 	}
-
-	// create the clientset
 	clientset, err = kubernetes.NewForConfig(config)
 	if err != nil {
 		panic(err.Error())
