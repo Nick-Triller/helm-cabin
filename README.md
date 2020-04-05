@@ -25,7 +25,7 @@ Install Helm Cabin with the provided chart.
 ```bash
 helm repo add helm-cabin https://nick-triller.github.io/helm-cabin/
 helm repo update
-helm upgrade --install --set helmVersion=3 helm-cabin helm-cabin/helm-cabin
+helm upgrade --install --set-string helmVersion=3 helm-cabin helm-cabin/helm-cabin
 ```
 
 Helm Cabin doesn't handle TLS itself. Please use a reverse proxy, 
