@@ -19,8 +19,12 @@ func BuildDockerImage() error {
 // This target is supposed to be run in development only and assumes tiller is
 // reachable at 127.0.0.1:44134
 func RunServer() error {
+	helmVersion := "3"
+	if value, ok := os.LookupEnv("CABIN_HELM_VERSION"); ok {
+		helmVersion = value
+	}
 	return sh.RunV("go", "run", "cmd/helmcabin/main.go", "--tillerAddress", "127.0.0.1:44134",
-		"--listenAddress", "localhost:8080")
+		"--listenAddress", "localhost:8080", "--helmVersion", helmVersion)
 }
 
 // BuildServerAll locally builds the artifacts for all supported platforms
@@ -44,19 +48,6 @@ func BuildServerLinux() error {
 // Lint lints the go code
 func Lint() error {
 	return sh.RunV("golint", "./...")
-}
-
-// CI runs targets are that supposed to run in continous integration pipelines
-func CI() error {
-	if err := BuildServerAll(); err != nil {
-		return err
-	}
-	return nil
-}
-
-// BuildFrontend locally builds the frontend
-func BuildFrontend() error {
-	return sh.RunV("npm", "--prefix", "web", "run", "build")
 }
 
 func buildLocal(goos string, goarch string) error {

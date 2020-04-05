@@ -2,6 +2,7 @@ package helm2
 
 import (
 	"context"
+	"github.com/Nick-Triller/helm-cabin/internal/resources"
 	"github.com/Nick-Triller/helm-cabin/internal/settings"
 	"time"
 
@@ -31,7 +32,7 @@ func NewContext() context.Context {
 }
 
 // PollReleases uses helm client to poll releasesCache
-func PollReleases(releasesChan chan *services.ListReleasesResponse, settings *settings.Settings) {
+func PollReleases(releasesChan chan []resources.ReleaseResource, settings *settings.Settings) {
 	connectTiller(settings)
 	pollSleep := 6 * time.Second
 	for {
@@ -53,10 +54,87 @@ func PollReleases(releasesChan chan *services.ListReleasesResponse, settings *se
 
 		if err != nil {
 			log.Warningf("Failed to retrieve releases: %v", err)
-			return
+		} else {
+			releasesChan <- convertResponseToReleaseListResources(resp)
 		}
 
-		releasesChan <- resp
 		time.Sleep(pollSleep)
+	}
+}
+
+func convertResponseToReleaseListResources(resp *services.ListReleasesResponse) []resources.ReleaseResource {
+	releaseResources := make([]resources.ReleaseResource, len(resp.Releases))
+	for i, helm2Release := range resp.GetReleases() {
+		releaseResources[i] = releaseListResourceFrom(helm2Release)
+	}
+	return releaseResources
+}
+
+func releaseListResourceFrom(r *release.Release) resources.ReleaseResource {
+	files := make([]resources.File, len(r.Chart.Files))
+	for i, helm2ChartFile := range r.Chart.Files {
+		template := resources.File{
+			TypeURL: helm2ChartFile.TypeUrl,
+			Value:   helm2ChartFile.Value,
+		}
+		files[i] = template
+	}
+
+	templates := make([]resources.Template, len(r.Chart.Templates))
+	for i, helm2Template := range r.Chart.Templates {
+		template := resources.Template{
+			Name:  helm2Template.Name,
+			Data: helm2Template.Data,
+		}
+		templates[i] = template
+	}
+
+	maintainers := make([]resources.Maintainer, len(r.Chart.Metadata.Maintainers))
+	for i, helm2Mantainer := range r.Chart.Metadata.Maintainers {
+		maintainer := resources.Maintainer{
+			Name:  helm2Mantainer.Name,
+			Email: helm2Mantainer.Email,
+			URL:   helm2Mantainer.Url,
+		}
+		maintainers[i] = maintainer
+	}
+
+	return resources.ReleaseResource{
+		Name:      r.Name,
+		Namespace: r.Namespace,
+		Templates: templates,
+		Files: files,
+		Values: r.Chart.Values.Raw,
+		Chart: &resources.ChartMetadata{
+			Name:          r.Chart.Metadata.Name,
+			Home:          r.Chart.Metadata.Home,
+			Sources:       r.Chart.Metadata.Sources,
+			Version:       r.Chart.Metadata.Version,
+			Description:   r.Chart.Metadata.Description,
+			Keywords:      r.Chart.Metadata.Keywords,
+			Maintainers:   maintainers,
+			Engine:        r.Chart.Metadata.Engine,
+			Icon:          r.Chart.Metadata.Icon,
+			APIVersion:    r.Chart.Metadata.ApiVersion,
+			Condition:     r.Chart.Metadata.Condition,
+			Tags:          r.Chart.Metadata.Tags,
+			AppVersion:    r.Chart.Metadata.AppVersion,
+			Deprecated:    r.Chart.Metadata.Deprecated,
+			TillerVersion: r.Chart.Metadata.TillerVersion,
+			Annotations:   r.Chart.Metadata.Annotations,
+			KubeVersion:   r.Chart.Metadata.KubeVersion,
+		},
+		Info: &resources.ReleaseInfo{
+			Status: &resources.Status{
+				StatusID:  r.Info.Status.Code.String(),
+				Notes:     r.Info.Status.Notes,
+			},
+			FirstDeployed: r.Info.FirstDeployed,
+			LastDeployed:  r.Info.LastDeployed,
+			Deleted:       r.Info.Deleted,
+			Description:   r.Info.Description,
+		},
+		Manifest: r.Manifest,
+		Version: r.Version,
 	}
 }

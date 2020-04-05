@@ -2,7 +2,6 @@ package settings
 
 import (
 	"flag"
-
 	log "github.com/sirupsen/logrus"
 )
 
@@ -11,6 +10,7 @@ type Settings struct {
 	TillerAddress *string
 	ListenAddress *string
 	FrontendPath  *string
+	HelmVersion   int
 }
 
 // FromCli reads the CLI options and constructs a Settings
@@ -22,6 +22,7 @@ func FromCli() *Settings {
 	tillerAddress := flag.String("tillerAddress", defaultTillerAddress, "Tiller address")
 	listenAddress := flag.String("listenAddress", ":8080", "Server listen address")
 	frontendPath := flag.String("frontendPath", "web/dist", "Path to frontend files")
+	helmVersion := flag.Int("helmVersion", 3, "Show releases of helm 2 or 3")
 
 	flag.Parse()
 
@@ -29,5 +30,6 @@ func FromCli() *Settings {
 		TillerAddress: tillerAddress,
 		ListenAddress: listenAddress,
 		FrontendPath:  frontendPath,
+		HelmVersion: *helmVersion,
 	}
 }

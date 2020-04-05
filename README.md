@@ -14,6 +14,7 @@ I decided to scratch my own itch and started Helm Cabin as part of
 
 ## Features
 
+- Supports Helm 2 & 3
 - List all releases with any status (deleted, superseded, deployed, etc.)
 - View revisions, rendered manifest, chart templates, chart values and chart files for any release
 
@@ -24,7 +25,7 @@ Install Helm Cabin with the provided chart.
 ```bash
 helm repo add helm-cabin https://nick-triller.github.io/helm-cabin/
 helm repo update
-helm upgrade --install helm-cabin helm-cabin/helm-cabin
+helm upgrade --install --set-string helmVersion=3 helm-cabin helm-cabin/helm-cabin
 ```
 
 Helm Cabin doesn't handle TLS itself. Please use a reverse proxy, 
@@ -38,14 +39,17 @@ and `build/Dockerfile` to see how the project is built.
 
 ## Development
 
+If you work in Helm 2 mode:
+
 ```bash
-# Port-forward to tiller
+# Port-forward to tiller if you work in Helm 2 mode
 kubectl port-forward svc/tiller-deploy -n kube-system 44134:44134
 # Start the frontend through vue-cli-service. 
 # The vue dev server proxies requests starting with /api to localhost:8080
 # The frontend will be served on localhost:8081 by default.
 npm --prefix web run serve
-# Start the backend on localhost:8080 (assumes tiller is reachable at localhost:44134)
+# Start the backend on localhost:8080 (assumes tiller is reachable at localhost:44134 in Helm 2 mode
+# or a valid kube context is set in Helm 3 mode)
 mage RunBackend
 ```
 
@@ -57,12 +61,15 @@ The project layout is based on
 ### Backend
 
 The backend periodically retrieves all releases including deleted releases and superseded revisions  
-from Tiller. 
+from Tiller (Helm 2) or Kubernetes secrets (Helm 3). 
 The result is cached in memory. 
 
 Helm Cabin tries to connect with Tiller via `tiller-deploy.kube-system.svc.cluster.local` by default. 
 The tiller host can be overriden with the `tillerAddress` CLI flag.
 Use port forwarding for local development.
+
+If you work in Helm 3 mode, Helm Cabin uses the current context to 
+connect to Kubernetes.
 
 ### Frontend
 

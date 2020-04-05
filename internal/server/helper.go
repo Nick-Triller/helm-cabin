@@ -1,8 +1,7 @@
 package server
 
 import (
-	"k8s.io/helm/pkg/proto/hapi/release"
-	"k8s.io/helm/pkg/proto/hapi/services"
+	"github.com/Nick-Triller/helm-cabin/internal/resources"
 	"strconv"
 )
 
@@ -17,25 +16,25 @@ func contains(s []string, e string) bool {
 }
 
 // findRelease finds a release in a ListReleasesResponse by name and version
-func findRelease(releases *services.ListReleasesResponse, releaseName string, version string) *release.Release {
+func findRelease(releases []resources.ReleaseResource, releaseName string, version string) *resources.ReleaseResource {
 	if releases == nil {
 		return nil
 	}
-	for _, x := range releases.GetReleases() {
+	for _, x := range releases {
 		if x.Name == releaseName && strconv.Itoa(int(x.Version)) == version {
-			return x
+			return &x
 		}
 	}
 	return nil
 }
 
 // findRevisions finds all revisions of a release in a ListRleasesResponse by name
-func findRevisions(releases *services.ListReleasesResponse, releaseName string) []*release.Release {
+func findRevisions(releases []resources.ReleaseResource, releaseName string) []resources.ReleaseResource {
 	if releases == nil {
 		return nil
 	}
-	revisions := make([]*release.Release, 0)
-	for _, x := range releases.GetReleases() {
+	revisions := make([]resources.ReleaseResource, 0)
+	for _, x := range releases {
 		if x.Name == releaseName {
 			revisions = append(revisions, x)
 		}

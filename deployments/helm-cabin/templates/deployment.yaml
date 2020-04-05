@@ -16,6 +16,7 @@ spec:
         app.kubernetes.io/name: {{ include "helm-cabin.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ include "helm-cabin.fullname" . }}
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -23,6 +24,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          args: ["--helmVersion", "{{ .Values.helmVersion }}"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
