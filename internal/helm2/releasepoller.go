@@ -1,13 +1,15 @@
-package server
+package helm2
 
 import (
 	"context"
+	"github.com/Nick-Triller/helm-cabin/internal/settings"
+	"time"
+
 	"google.golang.org/grpc/metadata"
 	"k8s.io/helm/pkg/proto/hapi/release"
 	"k8s.io/helm/pkg/proto/hapi/services"
 	"k8s.io/helm/pkg/version"
 	log "k8s.io/klog"
-	"time"
 )
 
 var releaseStatuses = []release.Status_Code{
@@ -25,13 +27,13 @@ var releaseStatuses = []release.Status_Code{
 // NewContext creates a versioned context.
 func NewContext() context.Context {
 	md := metadata.Pairs("x-helm-api-client", version.GetVersion())
-	return metadata.NewOutgoingContext(context.TODO(), md)
+	return metadata.NewOutgoingContext(context.Background(), md)
 }
 
 // PollReleases uses helm client to poll releasesCache
-func PollReleases(releasesChan chan *services.ListReleasesResponse) {
+func PollReleases(releasesChan chan *services.ListReleasesResponse, settings *settings.Settings) {
+	connectTiller(settings)
 	pollSleep := 6 * time.Second
-
 	for {
 		listReleaseRequest := &services.ListReleasesRequest{
 			Limit:  9999999999,

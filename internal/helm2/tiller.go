@@ -1,6 +1,7 @@
-package server
+package helm2
 
 import (
+	"github.com/Nick-Triller/helm-cabin/internal/settings"
 	"io"
 
 	"google.golang.org/grpc"
@@ -11,7 +12,7 @@ import (
 var conn *grpc.ClientConn
 var client services.ReleaseServiceClient
 
-func connectTiller(settings *Settings) {
+func connectTiller(settings *settings.Settings) {
 	var err error = nil
 	conn, err = grpc.Dial(*settings.TillerAddress, grpc.WithInsecure())
 	if err != nil {
