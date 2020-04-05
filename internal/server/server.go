@@ -6,9 +6,9 @@ import (
 	"sync"
 
 	"github.com/Nick-Triller/helm-cabin/internal/helm2"
+	log "github.com/sirupsen/logrus"
 	"k8s.io/helm/pkg/proto/hapi/services"
 	"k8s.io/helm/pkg/version"
-	log "github.com/sirupsen/logrus"
 )
 
 // Server is the main application struct

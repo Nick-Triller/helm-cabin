@@ -5,11 +5,11 @@ import (
 	"github.com/Nick-Triller/helm-cabin/internal/settings"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/metadata"
 	"k8s.io/helm/pkg/proto/hapi/release"
 	"k8s.io/helm/pkg/proto/hapi/services"
 	"k8s.io/helm/pkg/version"
-	log "github.com/sirupsen/logrus"
 )
 
 var releaseStatuses = []release.Status_Code{
