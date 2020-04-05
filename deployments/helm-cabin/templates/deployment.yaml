@@ -23,6 +23,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          args: ["--helmVersion", "{{ .Values.helmVersion }}"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
