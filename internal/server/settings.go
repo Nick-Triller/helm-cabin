@@ -2,15 +2,19 @@ package server
 
 import (
 	"flag"
+
 	"k8s.io/klog"
 )
 
+// Settings holds the application settings
 type Settings struct {
 	TillerAddress *string
 	ListenPort    *int
 	FrontendPath  *string
 }
 
+// SettingsFromCli reads the CLI options and constructs a Settings
+// object from them.
 func SettingsFromCli() *Settings {
 	defaultTillerAddress := "tiller-deploy.kube-system.svc.cluster.local:44134"
 	tillerAddress := flag.String("tillerAddress", defaultTillerAddress, "Tiller address")

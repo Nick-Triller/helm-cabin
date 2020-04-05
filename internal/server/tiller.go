@@ -1,8 +1,9 @@
 package server
 
 import (
-	"google.golang.org/grpc"
 	"io"
+
+	"google.golang.org/grpc"
 	"k8s.io/helm/pkg/proto/hapi/services"
 	log "k8s.io/klog"
 )
@@ -32,13 +33,10 @@ func getReleasesList(listReleaseRequest *services.ListReleasesRequest) (*service
 			log.V(1).Info("Received EOF, no releases exist")
 			// EOF if no releases exist
 			emptyResp := &services.ListReleasesResponse{
-				Count:                0,
-				Next:                 "",
-				Total:                0,
-				Releases:             nil,
-				XXX_NoUnkeyedLiteral: struct{}{},
-				XXX_unrecognized:     nil,
-				XXX_sizecache:        0,
+				Count:    0,
+				Next:     "",
+				Total:    0,
+				Releases: nil,
 			}
 			resp = emptyResp
 		} else {

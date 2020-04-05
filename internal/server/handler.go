@@ -2,17 +2,18 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"net/http"
 	"os"
 	"path"
+
+	"github.com/gorilla/mux"
 )
 
 // instance references the server struct for which the router handler was created
-var instance *server
+var instance *Server
 
 // router is the main handler that bundles all other handlers.
-func router(s *server) http.Handler {
+func router(s *Server) http.Handler {
 	instance = s
 	r := mux.NewRouter()
 	// API routes
