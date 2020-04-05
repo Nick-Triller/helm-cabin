@@ -68,7 +68,7 @@ Helm Cabin tries to connect with Tiller via `tiller-deploy.kube-system.svc.clust
 The tiller host can be overriden with the `tillerAddress` CLI flag.
 Use port forwarding for local development.
 
-If you work in Helm 3 mode, the Helm Cabin uses the current context to 
+If you work in Helm 3 mode, Helm Cabin uses the current context to 
 connect to Kubernetes.
 
 ### Frontend
