@@ -14,7 +14,7 @@ require (
 	k8s.io/api v0.17.2
 	k8s.io/apimachinery v0.17.2
 	k8s.io/client-go v0.17.2
-	k8s.io/helm v2.14.3+incompatible
+	k8s.io/helm v2.16.5+incompatible
 )
 
 replace (
