@@ -50,19 +50,6 @@ func Lint() error {
 	return sh.RunV("golint", "./...")
 }
 
-// CI runs targets are that supposed to run in continous integration pipelines
-func CI() error {
-	if err := BuildServerAll(); err != nil {
-		return err
-	}
-	return nil
-}
-
-// BuildFrontend locally builds the frontend
-func BuildFrontend() error {
-	return sh.RunV("npm", "--prefix", "web", "run", "build")
-}
-
 func buildLocal(goos string, goarch string) error {
 	mg.Deps(Lint)
 	_ = os.Setenv("GOOS", goos)
