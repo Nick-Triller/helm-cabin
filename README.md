@@ -30,6 +30,25 @@ helm upgrade --install helm-cabin helm-cabin/helm-cabin
 Helm Cabin doesn't handle TLS itself. Please use a reverse proxy, 
 e. g. [Traefik](https://traefik.io/), for TLS termination.
 
+## Build from source
+
+Helm Cabin uses [Magefile](https://github.com/magefile/mage) as task run. 
+Check out the mage targets in `Magefile.go`, the scripts section in `web/package.json` 
+and `build/Dockerfile` to see how the project is built. 
+
+## Development
+
+```bash
+# Port-forward to tiller
+kubectl port-forward svc/tiller-deploy -n kube-system 44134:44134
+# Start the frontend through vue-cli-service. 
+# The vue dev server proxies requests starting with /api to localhost:8080
+# The frontend will be served on localhost:8081 by default.
+npm --prefix web run serve
+# Start the backend on localhost:8080 (assumes tiller is reachable at localhost:44134)
+mage RunBackend
+```
+
 ## Project architecture
 
 The project layout is based on 
