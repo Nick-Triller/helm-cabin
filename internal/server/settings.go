@@ -9,7 +9,7 @@ import (
 // Settings holds the application settings
 type Settings struct {
 	TillerAddress *string
-	ListenPort    *int
+	ListenAddress *string
 	FrontendPath  *string
 }
 
@@ -18,7 +18,7 @@ type Settings struct {
 func SettingsFromCli() *Settings {
 	defaultTillerAddress := "tiller-deploy.kube-system.svc.cluster.local:44134"
 	tillerAddress := flag.String("tillerAddress", defaultTillerAddress, "Tiller address")
-	listenPort := flag.Int("port", 8080, "Server listen port")
+	listenAddress := flag.String("listenAddress", ":8080", "Server listen address")
 	frontendPath := flag.String("frontendPath", "web/dist", "Path to frontend files")
 
 	klog.InitFlags(nil)
@@ -26,7 +26,7 @@ func SettingsFromCli() *Settings {
 
 	return &Settings{
 		TillerAddress: tillerAddress,
-		ListenPort:    listenPort,
+		ListenAddress: listenAddress,
 		FrontendPath:  frontendPath,
 	}
 }
