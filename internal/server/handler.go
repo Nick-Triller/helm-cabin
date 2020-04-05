@@ -48,31 +48,7 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 
 // releasesHandler
 func releasesHandler(w http.ResponseWriter, r *http.Request) {
-	//qparam := r.URL.Query()
-	//statusCodes := qparam["statusCodes"]
-	//limit := atoiOrDefault(qparam.Get("limit"), 9999999)
-	//offset := qparam.Get("offset")
-	//sortBy := atoiOrDefault(qparam.Get("sortBy"), int(services.ListSort_LAST_RELEASED))
-	//filter := qparam.Get("filter")
-	//sortOrder := atoiOrDefault(qparam.Get("sortOrder"), int(services.ListSort_DESC))
-	//namespace := qparam.Get("namespace") // All namespace if empty
-
-	//listReleasesRequest := &services.ListReleasesRequest{
-	//	Limit:       int64(limit),
-	//	Offset:      offset,
-	//	SortBy:      services.ListSort_SortBy(sortBy),
-	//	Filter:      filter,
-	//	SortOrder:   services.ListSort_SortOrder(sortOrder),
-	//	StatusCodes: toStatusCodes(statusCodes),
-	//	Namespace:   namespace,
-	//}
-	// resp, err := getReleasesList(listReleasesRequest)
-
 	resp := instance.getCachedReleases()
-	// if err != nil {
-	//	w.WriteHeader(500)
-	//	return
-	// }
 
 	jsonData, _ := json.MarshalIndent(resp, "", "  ")
 	_, _ = w.Write(jsonData)

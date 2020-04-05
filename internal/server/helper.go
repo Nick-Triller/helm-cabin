@@ -42,23 +42,3 @@ func findRevisions(releases *services.ListReleasesResponse, releaseName string) 
 	}
 	return revisions
 }
-
-func atoiOrDefault(in string, defaultValue int) int {
-	parsed, err := strconv.Atoi(in)
-	if err != nil {
-		return defaultValue
-	}
-	return parsed
-}
-
-func toStatusCodes(in []string) []release.Status_Code {
-	result := make([]release.Status_Code, len(in))
-	for _, v := range in {
-		vInt, err := strconv.Atoi(v)
-		if err != nil {
-			continue
-		}
-		result = append(result, release.Status_Code(vInt))
-	}
-	return result
-}
