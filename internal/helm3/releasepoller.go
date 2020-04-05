@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/base64"
+	"fmt"
 	"github.com/Nick-Triller/helm-cabin/internal/resources"
 	"github.com/Nick-Triller/helm-cabin/internal/settings"
 	"github.com/golang/protobuf/ptypes/timestamp"
@@ -11,6 +12,7 @@ import (
 	"io/ioutil"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sort"
 	"time"
 
 	"encoding/json"
@@ -45,6 +47,11 @@ func convertResponseToReleaseListResources(resp *v1.SecretList) []resources.Rele
 		}
 		releaseResources[i] = releaseListResourceFrom(helm3Release)
 	}
+	// Sort desc last deployed timestamp
+	sort.Slice(releaseResources, func(i, j int) bool {
+		fmt.Println()
+		return releaseResources[i].Info.LastDeployed.Seconds > releaseResources[j].Info.LastDeployed.Seconds
+	})
 	return releaseResources
 }
 
