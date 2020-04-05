@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/grpc"
 	"k8s.io/helm/pkg/proto/hapi/services"
-	log "k8s.io/klog"
+	log "github.com/sirupsen/logrus"
 )
 
 var conn *grpc.ClientConn
@@ -31,8 +31,7 @@ func getReleasesList(listReleaseRequest *services.ListReleasesRequest) (*service
 	resp, err := listReleasesClient.Recv()
 	if err != nil {
 		if err == io.EOF {
-			log.V(1).Info("Received EOF, no releases exist")
-			// EOF if no releases exist
+			log.Info("Received EOF from tiller, no releases exist")
 			emptyResp := &services.ListReleasesResponse{
 				Count:    0,
 				Next:     "",

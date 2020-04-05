@@ -3,7 +3,7 @@ package settings
 import (
 	"flag"
 
-	"k8s.io/klog"
+	log "github.com/sirupsen/logrus"
 )
 
 // Settings holds the application settings
@@ -16,12 +16,13 @@ type Settings struct {
 // FromCli reads the CLI options and constructs a Settings
 // object from them.
 func FromCli() *Settings {
+	log.SetFormatter(&log.TextFormatter{})
+
 	defaultTillerAddress := "tiller-deploy.kube-system.svc.cluster.local:44134"
 	tillerAddress := flag.String("tillerAddress", defaultTillerAddress, "Tiller address")
 	listenAddress := flag.String("listenAddress", ":8080", "Server listen address")
 	frontendPath := flag.String("frontendPath", "web/dist", "Path to frontend files")
 
-	klog.InitFlags(nil)
 	flag.Parse()
 
 	return &Settings{
