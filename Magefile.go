@@ -18,7 +18,7 @@ func BuildDockerImage() error {
 // BuildBackend locally runs the backend with `go run`.
 // This target is supposed to be run in development only and assumes tiller is
 // reachable at 127.0.0.1:44134
-func RunBackend() error {
+func RunServer() error {
 	return sh.RunV("go", "run", "cmd/helmcabin/main.go", "--tillerAddress", "127.0.0.1:44134", "--listenAddress", "localhost:8080")
 }
 
