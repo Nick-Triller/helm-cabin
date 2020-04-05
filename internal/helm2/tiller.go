@@ -4,9 +4,9 @@ import (
 	"github.com/Nick-Triller/helm-cabin/internal/settings"
 	"io"
 
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"k8s.io/helm/pkg/proto/hapi/services"
-	log "github.com/sirupsen/logrus"
 )
 
 var conn *grpc.ClientConn
