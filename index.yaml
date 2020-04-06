@@ -3,11 +3,20 @@ entries:
   helm-cabin:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-10-04T14:51:18.08790635+02:00"
+    created: "2020-04-06T20:53:47.6084378+02:00"
+    description: A Helm chart for Kubernetes
+    digest: c65c12e48480f2d3dd4c846f60e3a73cbdb2be207ad3e01893805849a1cf1168
+    name: helm-cabin
+    urls:
+    - helm-cabin-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2020-04-06T20:53:47.6074618+02:00"
     description: A Helm chart for Kubernetes
     digest: d4b6d1d6fb4b2dc605c4fea30d74cc6a1dfeb81522195ce8e4db1a1642bb62cc
     name: helm-cabin
     urls:
-    - https://nick-triller.github.io/helm-cabin/helm-cabin-0.1.0.tgz
+    - helm-cabin-0.1.0.tgz
     version: 0.1.0
-generated: "2019-10-04T14:51:18.087516659+02:00"
+generated: "2020-04-06T20:53:47.6074618+02:00"
