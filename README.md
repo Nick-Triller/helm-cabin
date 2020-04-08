@@ -50,7 +50,7 @@ kubectl port-forward svc/tiller-deploy -n kube-system 44134:44134
 npm --prefix web run serve
 # Start the backend on localhost:8080 (assumes tiller is reachable at localhost:44134 in Helm 2 mode
 # or a valid kube context is set in Helm 3 mode)
-mage RunBackend
+mage RunServer
 ```
 
 ## Project architecture
