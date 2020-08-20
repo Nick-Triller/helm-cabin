@@ -5,6 +5,8 @@ in a Kubernetes cluster.
 
 ![](./screenshots/screenshot001.png)
 
+Warning: Helm-Cabin shows all secrets that were created through Helm!
+
 ## Motivation
  
 I wasn't able to find a simple web UI that visualizes the data managed by 
