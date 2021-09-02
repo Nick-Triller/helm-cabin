@@ -3,7 +3,7 @@
 Helm Cabin is a web UI that visualizes Helm releases 
 in a Kubernetes cluster. 
 
-![](./screenshots/screenshot001.png)
+![overview page screenshot](./screenshots/overview.png)
 
 ## Motivation
  
@@ -17,6 +17,8 @@ I decided to scratch my own itch and started Helm Cabin as part of
 - Supports Helm 2 & 3
 - List all releases with any status (deleted, superseded, deployed, etc.)
 - View revisions, rendered manifest, chart templates, chart values and chart files for any release
+
+![release details page screenshot](./screenshots/release_details.png)
 
 ## Install
 
